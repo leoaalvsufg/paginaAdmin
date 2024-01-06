@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; }
+        h1, h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        form { margin-bottom: 20px; display: inline; }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            width: calc(100% - 22px); /* Adjust width to accommodate padding and border */
+        }
+        .button {
+            padding: 10px 15px;
+            margin: 0 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .add-button { background-color: #4CAF50; color: white; }
+        .add-button:hover { opacity: 0.8; }
+        .delete-button { background-color: #f44336; color: white; }
+        .delete-button:hover { opacity: 0.8; }
+        .password-button { background-color: #000000; color: white; }
+        .password-button:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <h1>Página de Administração</h1>
+
+    <!-- Formulário para adicionar um novo usuário -->
+    <form action="/add_user" method="post">
+        <h2>Adicionar Novo Usuário</h2>
+        <input type="text" name="new_username" placeholder="Nome do Usuário" required>
+        <input type="password" name="new_password" placeholder="Senha" required>
+        <input type="text" name="new_permissions" placeholder="Permissões (ex: page1:secao=todas,loja=todas)" required>
+        <button type="submit" class="button add-button">Adicionar Usuário</button>
+    </form>
+
+    <h2>Lista de Usuários</h2>
+    <table>
+        <tr>
+            <th>Usuário</th>
+            <th>Ações</th>
+        </tr>
+        {% for username, allowed_pages in users %}
+        <tr>
+            <td>{{ username }}</td>
+            <td>
+                <form action="/change_password" method="post" style="display: inline;">
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <input type="password" name="new_password" placeholder="Nova Senha" style="width: auto;">
+                    <button type="submit" class="button password-button">Alterar Senha</button>
+                </form>
+
+                <form action="/change_permissions" method="post" style="display: inline;">
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <input type="text" name="new_permissions" placeholder="Novas Permissões" value="{{ allowed_pages }}" style="width: auto;">
+                    <button type="submit" class="button add-button">Alterar Permissões</button>
+                </form>
+
+                <form action="/delete_user" method="post" style="display: inline;">
+                    <input type="hidden" name="username" value="{{ username }}">
+                    <button type="submit" class="button delete-button">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
